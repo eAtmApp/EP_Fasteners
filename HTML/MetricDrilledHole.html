@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta content="en-us" http-equiv="Content-Language" />
+<title>Metric Drilled Hole</title>
+<script  type="text/javascript">
+
+function setHoleType(newtype) {
+   switch(newtype) {
+    case "ThruHole":
+        $("#cbThruHole").click();
+        break;
+    default:
+        $("#cbPartialHole").click();
+        break;
+    }
+}
+
+function setError(errField, errorText)   {
+   $("#STATUS").hide();
+   $("#PARAMETERS").show();
+   $("#BUTTONS").show();
+   $("#TITLE").hide();
+   $("#ERRMSG").text(errorText);
+   $("#ERRMSG").show();
+   if (errField == "Length") {
+      $("#LENGTH").css('background-color', 'yellow');
+      $("#CUSTOMSIZE").css('background-color', 'white');
+   } else {
+      $("#LENGTH").css('background-color', 'white');
+      $("#CUSTOMSIZE").css('background-color', 'yellow');
+   }
+}
+
+function setStatus(statusText) {
+   $("#HOLEDESCRIPTION").text(statusText);
+   $("#PARAMETERS").hide();
+   $("#BUTTONS").hide();
+   $("#STATUS").show();
+   window.location = "skp:ruby_Continue@Continue"
+}
+
+function myTimer() {
+   var d = new Date();
+   $("#Buildtime").html(d.toLocaleTimeString());
+}
+
+function buildHole() {
+    var results;
+    var lastlength = "1.00";
+    results = $("#RESULTS").val();
+    window.location = results;
+}
+
+function setSize(nsize) {
+    $('#CUSTOMSIZE').val(nsize);               
+    $('#DRILLSIZE').val(nsize); 
+}
+
+function getSize(strsize) {
+    nstr = strsize;
+    return nstr;
+}
+
+$(document).ready(function(){
+    $("#STATUS").hide();
+    $("#ERRMSG").hide();
+
+    var myVar=setInterval(function () {myTimer()}, 1000);
+    
+    $("#bOK").click(function(){
+       $("#HOLEDESCRIPTION").text("Hole: " + $("#DRILLSIZE").val() + " " + $("#LENGTH").val() + " Inches long");
+       $("#PARAMETERS").hide(200);
+       $("#BUTTONS").hide(200);
+       $("#STATUS").show(200);
+       results = "skp:ruby_OKPressed@bs=" + 
+                         $("#DRILLSIZE").val() + 
+                         ";ln=" + $("#LENGTH").val() + 
+                         ";ht=" + $("#HOLETYPE").val();
+       $("#RESULTS").val(results);
+       setTimeout(function() {buildHole()},600);
+    });
+  
+    $("#bCancel").click(function(){
+       window.location = "skp:ruby_CANCELPressed@CANCEL";
+    });
+   
+    $("#imgThru").click(function()       { $("#cbThruHole").click();});
+    $("#imgPartial").click(function()    { $("#cbPartialHole").click();});
+    $("#cbThruHole").click(function()    { $("#RowLength").hide(200);  
+                                           $("#HOLETYPE").val("ThruHole");  
+                                           lastlength = $("#LENGTH").val()
+                                           $("#LENGTH").val("0.00")
+                                         });
+    $("#cbPartialHole").click(function()   { $("#RowLength").show(200);  
+                                             $("#HOLETYPE").val("Hole");
+                                             $("#LENGTH").val(lastlength)
+    });
+    $('#HOLESIZES').change(function() { $('#cbHoleSizes').click();});
+    $('#CUSTOMSIZE').click(function()      { $('#cbCustom').click();    });
+    $('#FRACTIONALSIZE').click(function()  { $('#cbFractional').click();});   
+    $('#LETTEREDSIZE').click(function()    { $('#cbLetter').click();    });
+    $('#NUMBEREDSIZE').click(function()    { $('#cbNumber').click();    });
+    $('#cbHoleSizes').click(function()     { setSize(getSize($('#HOLESIZES').val())); });
+    $('#CUSTOMSIZE').blur(function()       { setSize($('#CUSTOMSIZE').val());              });
+                                    
+    setHoleType('ThruHole');
+   
+    window.location = "skp:ruby_DocumentReady@OK";
+
+});
+</script>
+
+
+</head>
+
+<body  title="Create Standard Metric Drilled Hole">
+
+<div id="HEADING">
+<h1 id="TITLE" style="text-align:center">创建钻孔</h1>
+<h2 id="ERRMSG" style="text-align:left; color:red;">Error</h2>
+</div>
+<div id="PARAMETERS">
+	<form method="post">
+	<input id="RESULTS" type="hidden" value="CANCEL"/>
+	<input id="HOLETYPE" type="hidden" value="ThruHole"/>
+	<input id="DRILLSIZE" type="hidden" value=""/>
+	<table style="width: 99%; border:medium white solid">
+		<tr>
+			<td style="width: 170px; text-align: right">标准螺栓孔</td>
+			<td style="width: 290px; text-align: left">
+				<input id="cbHoleSizes"  value="HoleSizes" name="Sizetype"  type="radio"></input>
+				<select name="Drillsize"  id="HOLESIZES" style="width: 200px; font-family: 'Courier New', Courier, monospace;">
+					<option>1.2</option>
+					<option>1.4</option>
+					<option>1.6</option>
+					<option>1.8</option>
+					<option>2</option>
+					<option>2.4</option>
+					<option>2.9</option>
+					<option>3.4</option>
+					<option>3.85</option>
+					<option>4.5</option>
+					<option>5.5</option>
+					<option>6.6</option>
+					<option>7.7</option>
+					<option>8.8</option>
+					<option>11</option>
+					<option>13.5</option>
+					<option>15.5</option>
+					<option>17.5</option>
+					<option>20</option>
+					<option>22</option>
+					<option>24</option>
+					<option>26</option>
+					<option>30</option>
+					<option>33</option>
+					<option style="font-weight:bold">1&nbsp;&nbsp;(1.0000)</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 170px; text-align: right">自定义大小 (mm)</td>
+			<td>
+				<input id="cbCustom"  value="Custom" name="Sizetype"  type="radio" style="font-family: &quot;Courier New&quot;, Courier, monospace"></input>
+				<input name="Length" id="CUSTOMSIZE" style="width: 150px" type="number" />
+			</td>
+		</tr>
+		<tr id="RowLength">
+			<td style="width: 170px; text-align: right">长度 (mm)</td>
+			<td><input name="Length" id="LENGTH" style="width: 150px" type="number" value="1.00"/></td>
+		</tr>
+		<tr>
+			<td style="width: 170px; text-align: right">自动通孔?</td>
+			<td align="left" style="width: 300px">
+				<table style="width: 100%; vertical-align:middle">
+					<tr>
+						<td style="width: 50%">
+							<input id="cbThruHole"  value="Hex" name="Holetype"  type="radio"></input>
+							<label for="cbThruHole"><img id="imgThru" src="ThruDrilled.png" alt="Thru hole"/></label>
+						</td>
+						<td style="width: 50%">
+							<input id="cbPartialHole" value="Socket" name="Holetype" type="radio" />
+							<label for="cbPartialHole"><img id="imgPartial" src="NotThruDrilled.png" alt="Partial Hole"/></label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+</div>
+<div id="STATUS" style="width: 99%; border:thick red double;" >
+<p id="Buildtime"></p>
+<h2 style="text-align: center;">
+... PLEASE WAIT...
+</h2>
+<h2 style="text-align: center;">
+Drilling Hole... 
+</h2>
+<p style="text-align: center;">
+<strong id="HOLEDESCRIPTION"></strong>
+</p>
+</div>
+<div id="BUTTONS">
+	<table style="width: 470px; text-align: center;">
+	<tr>
+	<td style="width: 25%"></td>
+	<td style="width: 25%">
+	<button name="bOk" id="bOK">&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;</button>	</td>	
+	<td style="width: 25%">
+	<button name="bCancel" id="bCancel">取消</button>	</td>
+	<td style="width: 25%"></td>
+	</tr>
+	</table>
+</div>
+
+</body>
+
+</html>

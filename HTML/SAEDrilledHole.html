@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta content="en-us" http-equiv="Content-Language" />
+<title>SAE Drilled Hole</title>
+<script  type="text/javascript">
+
+function setHoleType(newtype) {
+   switch(newtype) {
+    case "ThruHole":
+        $("#cbThruHole").click();
+        break;
+    default:
+        $("#cbPartialHole").click();
+        break;
+    }
+}
+
+function setError(errField, errorText)   {
+   $("#STATUS").hide();
+   $("#PARAMETERS").show();
+   $("#BUTTONS").show();
+   $("#TITLE").hide();
+   $("#ERRMSG").text(errorText);
+   $("#ERRMSG").show();
+   if (errField == "Length") {
+      $("#LENGTH").css('background-color', 'yellow');
+      $("#CUSTOMSIZE").css('background-color', 'white');
+   } else {
+      $("#LENGTH").css('background-color', 'white');
+      $("#CUSTOMSIZE").css('background-color', 'yellow');
+   }
+}
+
+function setStatus(statusText) {
+   $("#HOLEDESCRIPTION").text(statusText);
+   $("#PARAMETERS").hide();
+   $("#BUTTONS").hide();
+   $("#STATUS").show();
+   window.location = "skp:ruby_Continue@Continue"
+}
+
+function myTimer() {
+   var d = new Date();
+   $("#Buildtime").html(d.toLocaleTimeString());
+}
+
+function buildHole() {
+    var results;
+    var lastlength = "1.00";
+    results = $("#RESULTS").val();
+    window.location = results;
+}
+
+function setSize(nsize) {
+    $('#CUSTOMSIZE').val(nsize);               
+    $('#DRILLSIZE').val(nsize); 
+}
+
+function getSize(strsize) {
+    nstr = strsize.slice(-7,-1);
+    return nstr;
+}
+
+$(document).ready(function(){
+    $("#STATUS").hide();
+    $("#ERRMSG").hide();
+
+    var myVar=setInterval(function () {myTimer()}, 1000);
+    
+    $("#bOK").click(function(){
+       $("#HOLEDESCRIPTION").text("Hole: " + $("#DRILLSIZE").val() + " " + $("#LENGTH").val() + " Inches long");
+       $("#PARAMETERS").hide(200);
+       $("#BUTTONS").hide(200);
+       $("#STATUS").show(200);
+       results = "skp:ruby_OKPressed@bs=" + 
+                         $("#DRILLSIZE").val() + 
+                         ";ln=" + $("#LENGTH").val() + 
+                         ";ht=" + $("#HOLETYPE").val();
+       $("#RESULTS").val(results);
+       setTimeout(function() {buildHole()},600);
+    });
+  
+    $("#bCancel").click(function(){
+       window.location = "skp:ruby_CANCELPressed@CANCEL";
+    });
+   
+    $("#imgThru").click(function()       { $("#cbThruHole").click();});
+    $("#imgPartial").click(function()    { $("#cbPartialHole").click();});
+    $("#cbThruHole").click(function()    { $("#RowLength").hide(200);  
+                                           $("#HOLETYPE").val("ThruHole");  
+                                           lastlength = $("#LENGTH").val()
+                                           $("#LENGTH").val("0.00")
+                                         });
+    $("#cbPartialHole").click(function()   { $("#RowLength").show(200);  
+                                             $("#HOLETYPE").val("Hole");
+                                             $("#LENGTH").val(lastlength)
+    });
+    setHoleType('ThruHole');
+    
+    $('#FRACTIONALSIZE').change(function() { $('#cbFractional').click();});
+    $('#LETTEREDSIZE').change(function()   { $('#cbLetter').click();    });
+    $('#NUMBEREDSIZE').change(function()   { $('#cbNumber').click();    });
+    $('#CUSTOMSIZE').click(function()      { $('#cbCustom').click();    });
+    $('#FRACTIONALSIZE').click(function()  { $('#cbFractional').click();});   
+    $('#LETTEREDSIZE').click(function()    { $('#cbLetter').click();    });
+    $('#NUMBEREDSIZE').click(function()    { $('#cbNumber').click();    });
+    $('#cbFractional').click(function()    { setSize(getSize($('#FRACTIONALSIZE').val())); });
+    $('#cbLetter').click(function()        { setSize(getSize($('#LETTEREDSIZE').val()));   });
+    $('#cbNumber').click(function()        { setSize(getSize($('#NUMBEREDSIZE').val()));   });         
+    $('#CUSTOMSIZE').blur(function()       { setSize($('#CUSTOMSIZE').val());              });
+                                    
+   
+    window.location = "skp:ruby_DocumentReady@OK";
+
+});
+</script>
+
+
+</head>
+
+<body  title="Create Standard SAE Drilled Hole" style="background-image: url('backgroundmed.png')">
+
+<div id="HEADING">
+<h1 id="TITLE" style="text-align:center">Create Drilled Hole</h1>
+<h2 id="ERRMSG" style="text-align:left; color:red;">Error</h2>
+</div>
+<div id="PARAMETERS">
+	<form method="post">
+	<input id="RESULTS" type="hidden" value="CANCEL"/>
+	<input id="HOLETYPE" type="hidden" value="ThruHole"/>
+	<input id="DRILLSIZE" type="hidden" value=""/>
+	<table style="width: 99%; border:medium white solid">
+		<tr>
+			<td style="width: 170px; text-align: right">Fractional Drill Size</td>
+			<td style="width: 290px; text-align: left">
+				<input id="cbFractional"  value="Fractional" name="Sizetype"  type="radio"></input>
+				<select name="Drillsize"  id="FRACTIONALSIZE" style="width: 200px; font-family: 'Courier New', Courier, monospace;">
+					<option>1/64   (0.0156)</option>
+					<option>1/32   (0.0313)</option>
+					<option>3/64   (0.0469)</option>
+					<option>1/16   (0.0625)</option>
+					<option>5/64   (0.0781)</option>
+					<option>3/32   (0.0938)</option>
+					<option>7/64   (0.1094)</option>
+					<option style="font-weight:bold">1/8&nbsp;&nbsp;(0.1250)</option>
+					<option>9/64   (0.1406)</option>
+					<option>5/32   (0.1563)</option>
+					<option>11/64(0.1719)</option>
+					<option>3/16   (0.1875)</option>
+					<option>13/64(0.2031)</option>
+					<option>7/32   (0.2188)</option>
+					<option>15/64(0.2344)</option>
+					<option style="font-weight:bold">1/4&nbsp;&nbsp;(0.2500)</option>
+					<option>17/64(0.2656)</option>
+					<option>9/32    (0.2813)</option>
+					<option>19/64(0.2969)</option>
+					<option>5/16     (0.3125)</option>
+					<option>21/64(0.3281)</option>
+					<option>11/32(0.3438)</option>
+					<option>23/64(0.3594)</option>
+					<option style="font-weight:bold">3/8&nbsp;&nbsp;(0.3750)</option>
+					<option>25/64(0.3906)</option>
+					<option>13/32(0.4063)</option>
+					<option>27/64(0.4219)</option>
+					<option>7/16     (0.4375)</option>
+					<option>29/64(0.4531)</option>
+					<option>15/32(0.4688)</option>
+					<option>31/64(0.4844)</option>
+					<option style="font-weight:bold">1/2&nbsp;&nbsp;(0.5000)</option>
+					<option>33/64(0.5156)</option>
+					<option>17/32(0.5313)</option>
+					<option>35/64(0.5469)</option>
+					<option>9/16     (0.5625)</option>
+					<option>37/64(0.5781)</option>
+					<option>19/32(0.5938)</option>
+					<option>39/64(0.6094)</option>
+					<option style="font-weight:bold">5/8&nbsp;&nbsp;(0.6250)</option>
+					<option>41/64(0.6406)</option>
+					<option>21/32(0.6563)</option>
+					<option>43/64(0.6719)</option>
+					<option>11/16(0.6875)</option>
+					<option>45/64(0.7031)</option>
+					<option>23/32(0.7188)</option>
+					<option>47/64(0.7344)</option>
+					<option style="font-weight:bold">3/4&nbsp;&nbsp;(0.7500)</option>
+					<option>49/64(0.7656)</option>
+					<option>25/32(0.7813)</option>
+					<option>51/64(0.7969)</option>
+					<option>13/16(0.8125)</option>
+					<option>53/64(0.8281)</option>
+					<option>27/32(0.8438)</option>
+					<option>55/64(0.8594)</option>
+					<option style="font-weight:bold">7/8&nbsp;&nbsp;(0.8750)</option>
+					<option>57/64(0.8906)</option>
+					<option>29/32(0.9063)</option>
+					<option>59/64(0.9219)</option>
+					<option>15/16(0.9375)</option>
+					<option>61/64(0.9531)</option>
+					<option>31/32(0.9688)</option>
+					<option>63/64(0.9844)</option>
+					<option style="font-weight:bold">1&nbsp;&nbsp;(1.0000)</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 170px; text-align: right">Numbered Drill Size</td>
+			<td style="width: 290px; text-align: left">
+				<input id="cbNumber"  value="Number" name="Sizetype"  type="radio" ></input>
+				<select name="Drillsize"  id="NUMBEREDSIZE" style="width: 200px; font-family: 'Courier New', Courier, monospace;">
+					<option style="font-weight:bold" >#80  (0.0135)</option>
+					<option>#79  (0.0145)</option>
+					<option>#78  (0.0160)</option>
+					<option>#77  (0.0180)</option>
+					<option>#76  (0.0200)</option>
+					<option>#75  (0.0210)</option>
+					<option>#74  (0.0225)</option>
+					<option>#73  (0.0240)</option>
+					<option>#72  (0.0250)</option>
+					<option>#71  (0.0260)</option>
+					<option style="font-weight:bold">#70  (0.0280)</option>
+					<option>#69  (0.0292)</option>
+					<option>#68  (0.0310)</option>
+					<option>#67  (0.0320)</option>
+					<option>#66  (0.0330)</option>
+					<option>#65  (0.0350)</option>
+					<option>#64  (0.0360)</option>
+					<option>#63  (0.0370)</option>
+					<option>#62  (0.0380)</option>
+					<option>#61  (0.0390)</option>
+					<option style="font-weight:bold">#60  (0.0400)</option>
+					<option>#59  (0.0410)</option>
+					<option>#58  (0.0420)</option>
+					<option>#57  (0.0430)</option>
+					<option>#56  (0.0465)</option>
+					<option>#55  (0.0520)</option>
+					<option>#54  (0.0550)</option>
+					<option>#53  (0.0595)</option>
+					<option>#52  (0.0635)</option>
+					<option>#51  (0.0670)</option>
+					<option style="font-weight:bold">#50  (0.0700)</option>
+					<option>#49  (0.0730)</option>
+					<option>#48  (0.0760)</option>
+					<option>#47  (0.0785)</option>
+					<option>#46  (0.0810)</option>
+					<option>#45  (0.0820)</option>
+					<option>#44  (0.0860)</option>
+					<option>#43  (0.0890)</option>
+					<option>#42  (0.0935)</option>
+					<option>#41  (0.0960)</option>
+					<option style="font-weight:bold">#40  (0.0980)</option>
+					<option>#39  (0.0995)</option>
+					<option>#38  (0.1015)</option>
+					<option>#37  (0.1040)</option>
+					<option>#36  (0.1065)</option>
+					<option>#35  (0.1100)</option>
+					<option>#34  (0.1110)</option>
+					<option>#33  (0.1130)</option>
+					<option>#32  (0.1160)</option>
+					<option>#31  (0.1200)</option>
+					<option style="font-weight:bold">#30  (0.1285)</option>
+					<option>#29  (0.1360)</option>
+					<option>#28  (0.1405)</option>
+					<option>#27  (0.1440)</option>
+					<option>#26  (0.1470)</option>
+					<option>#25  (0.1495)</option>
+					<option>#24  (0.1520)</option>
+					<option>#23  (0.1540)</option>
+					<option>#22  (0.1570)</option>
+					<option>#21  (0.1590)</option>
+					<option style="font-weight:bold">#20  (0.1610)</option>
+					<option>#19  (0.1660)</option>
+					<option>#18  (0.1695)</option>
+					<option>#17  (0.1730)</option>
+					<option>#16  (0.1770)</option>
+					<option>#15  (0.1800)</option>
+					<option>#14  (0.1820)</option>
+					<option>#13  (0.1850)</option>
+					<option>#12  (0.1890)</option>
+					<option>#11  (0.1910)</option>
+					<option style="font-weight:bold">#10  (0.1935)</option>
+					<option>#9&nbsp;&nbsp;(0.1960)</option>
+					<option>#8&nbsp;&nbsp;(0.1990)</option>
+					<option>#7&nbsp;&nbsp;(0.2010)</option>
+					<option>#6&nbsp;&nbsp;(0.2040)</option>
+					<option>#5&nbsp;&nbsp;(0.2055)</option>
+					<option>#4&nbsp;&nbsp;(0.2090)</option>
+					<option>#3&nbsp;&nbsp;(0.2130)</option>
+					<option>#2&nbsp;&nbsp;(0.2210)</option>
+					<option>#1&nbsp;&nbsp;(0.2280)</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 170px; text-align: right">Letter Drill Size</td>
+			<td style="width: 290px; text-align: left">
+				<input id="cbLetter"  value="Letter" name="Sizetype"  type="radio" ></input>
+				<select name="Drillsize"  id="LETTEREDSIZE" style="width:200px; font-family: 'Courier New', Courier, monospace;">
+					<option>#A   (0.2340)</option>
+					<option>#B   (0.2380)</option>
+					<option>#C   (0.2420)</option>
+					<option>#D   (0.2460)</option>
+					<option style="font-weight:bold">#E   (0.2500)</option>
+					<option>#F   (0.2570)</option>
+					<option>#G   (0.2610)</option>
+					<option>#H   (0.2660)</option>
+					<option>#I   (0.2720)</option>
+					<option>#J   (0.2770)</option>
+					<option>#K   (0.2810)</option>
+					<option>#L   (0.2900)</option>
+					<option>#M   (0.2950)</option>
+					<option>#N   (0.3020)</option>
+					<option>#O   (0.3160)</option>
+					<option>#P   (0.3230)</option>
+					<option>#Q   (0.3320)</option>
+					<option>#R   (0.3390)</option>
+					<option>#S   (0.3480)</option>
+					<option>#T   (0.3580)</option>
+					<option>#U   (0.3680)</option>
+					<option>#V   (0.3770)</option>
+					<option>#W   (0.3860)</option>
+					<option>#X   (0.3970)</option>
+					<option>#Y   (0.4040)</option>
+					<option>#Z   (0.4130)</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 170px; text-align: right">Custom Size</td>
+			<td>
+				<input id="cbCustom"  value="Custom" name="Sizetype"  type="radio" style="font-family: &quot;Courier New&quot;, Courier, monospace"></input>
+				<input name="Length" id="CUSTOMSIZE" style="width: 150px" type="number" />
+			</td>
+		</tr>
+		<tr id="RowLength">
+			<td style="width: 170px; text-align: right">Length (Inches)</td>
+			<td><input name="Length" id="LENGTH" style="width: 150px" type="number" value="1.00"/></td>
+		</tr>
+		<tr>
+			<td style="width: 170px; text-align: right">Automatic Through Hole?</td>
+			<td align="left" style="width: 300px">
+				<table style="width: 100%; vertical-align:middle">
+					<tr>
+						<td style="width: 50%">
+							<input id="cbThruHole"  value="Hex" name="Holetype"  type="radio"></input>
+							<label for="cbThruHole"><img id="imgThru" src="ThruDrilled.png" alt="Thru hole"/></label>
+						</td>
+						<td style="width: 50%">
+							<input id="cbPartialHole" value="Socket" name="Holetype" type="radio" />
+							<label for="cbPartialHole"><img id="imgPartial" src="NotThruDrilled.png" alt="Partial Hole"/></label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+</div>
+<div id="STATUS" style="width: 99%; border:thick red double;" >
+<p id="Buildtime"></p>
+<h2 style="text-align: center;">
+... PLEASE WAIT...
+</h2>
+<h2 style="text-align: center;">
+Drilling Hole... 
+</h2>
+<p style="text-align: center;">
+<strong id="HOLEDESCRIPTION"></strong>
+</p>
+</div>
+<div id="BUTTONS">
+	<table style="width: 470px; text-align: center;">
+	<tr>
+	<td style="width: 25%"></td>
+	<td style="width: 25%">
+	<button name="bOk" id="bOK">&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;</button>	</td>	
+	<td style="width: 25%">
+	<button name="bCancel" id="bCancel">Cancel</button>	</td>
+	<td style="width: 25%"></td>
+	</tr>
+	</table>
+</div>
+</body>
+
+</html>

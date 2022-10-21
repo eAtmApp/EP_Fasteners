@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta content="en-us" http-equiv="Content-Language" />
+<title>Metric/UTS Bolt Creation</title>
+<script  type="text/javascript">
+
+function setHoleType(newtype) {
+   switch(newtype) {
+    case "ThruHole":
+        $("#cbThruHole").click();
+        break;
+    default:
+        $("#cbPartialHole").click();
+        break;
+    }
+}
+
+function setThreadType(newtype) {
+   switch(newtype) {
+    case "Coarse":
+        $("#cbCoarse").click();
+        break;
+    case "Fine":
+        $("#cbFine").click();
+        break;
+    case "Extra Fine":
+        $("#cbXFine").click();
+        break;
+    default:
+        $("#cbCoarse").click();
+        break;
+    }
+}
+
+function setError(errField, errorText)   {
+   $("#STATUS").hide();
+   $("#PARAMETERS").show();
+   $("#BUTTONS").show();
+   $("#TITLE").hide();
+   $("#ERRMSG").text(errorText);
+   $("#ERRMSG").show();
+   $("#LENGTH").css('background-color', 'yellow');
+   $("#LENGTH").focus();
+}
+
+function setStatus(statusText) {
+   $("#HOLEDESCRIPTION").text(statusText);
+   $("#PARAMETERS").hide();
+   $("#BUTTONS").hide();
+   $("#STATUS").show();
+   window.location = "skp:ruby_Continue@Continue"
+}
+
+function myTimer() {
+   var d = new Date();
+   $("#Buildtime").html(d.toLocaleTimeString());
+}
+
+function buildHole() {
+    var results;
+    var lastlength = "1.00";
+    results = $("#RESULTS").val();
+    window.location = results;
+}
+
+$(document).ready(function(){
+    $("#STATUS").hide();
+    $("#ERRMSG").hide();
+
+    var myVar=setInterval(function () {myTimer()}, 1000);
+    
+    $("#bOK").click(function(){
+       $("#HOLEDESCRIPTION").text("Bolt: " + $("#BOLTSIZE").val() + " " +  $("#THREADTYPE").val() + ", "  + $("#LENGTH").val() + " Inches long");
+       $("#PARAMETERS").hide(200);
+       $("#BUTTONS").hide(200);
+       $("#STATUS").show(200);
+       results = "skp:ruby_OKPressed@bs=" + 
+                         $("#BOLTSIZE").val() + 
+                         ";ln=" + $("#LENGTH").val() +
+                         ";tt=" + $("#THREADTYPE").val() + 
+                         ";ht=" + $("#HOLETYPE").val();
+       $("#RESULTS").val(results);
+       setTimeout(function() {buildHole()},600);
+    });
+  
+    $("#bCancel").click(function(){
+       window.location = "skp:ruby_CANCELPressed@CANCEL";
+    });
+   
+    $("#imgThru").click(function()       { $("#cbThruHole").click();});
+    $("#imgPartial").click(function()    { $("#cbPartialHole").click();});
+    $("#cbThruHole").click(function()    { $("#RowLength").hide(200);  
+                                           $("#HOLETYPE").val("ThruHole");  
+                                           lastlength = $("#LENGTH").val()
+                                           $("#LENGTH").val("0.00")
+                                         });
+    $("#cbPartialHole").click(function() { $("#RowLength").show(200);  
+                                           $("#HOLETYPE").val("Hole");
+                                           $("#LENGTH").val(lastlength)
+                                         });
+     setHoleType('ThruHole');
+     
+    $("#imgCoarse").click(function()  { $("#cbCoarse").click();});
+    $("#imgFine").click(function()    { $("#cbFine").click();});
+    $("#imgXFine").click(function()   { $("#cbXFine").click();});
+    $("#cbCoarse").click(function()   { $("#THREADTYPE").val("Coarse");});
+    $("#cbFine").click(function()     { $("#THREADTYPE").val("Fine");});
+    $("#cbXFine").click(function()    { $("#THREADTYPE").val("Extra Fine");});
+    
+   
+    window.location = "skp:ruby_DocumentReady@OK";
+
+});
+</script>
+
+
+</head>
+
+<body  title="Create Standard Metric/UTS Tapped Hole">
+
+<div id="HEADING">
+<h1 id="TITLE" style="text-align:center">创建公制螺纹孔</h1>
+<h2 id="ERRMSG" style="text-align:left; color:red;">Error</h2>
+
+</div>
+<div id="PARAMETERS">
+	<form method="post">
+	<input id="RESULTS" type="hidden" value="CANCEL"/>
+	<input id="HOLETYPE" type="hidden" value="ThruHole"/>
+	<input id="THREADTYPE"  type="hidden" value ="Coarse"/>
+	<table style="width: 99%; border:medium white solid">
+		<tr>
+			<td style="width: 170px; text-align: right">螺栓尺寸</td>
+			<td style="width: 290px; text-align: left">
+				<select name="Boltsize"  id="BOLTSIZE" style="width: 95%">
+					<option>M1</option>
+					<option>M1.2</option>
+					<option>M1.4</option>
+					<option>M1.6</option>
+					<option>M1.8</option>
+					<option>M2</option>
+					<option>M2.5</option>
+					<option>M3</option>
+					<option>M3.5</option>
+					<option>M4</option>
+					<option>M5</option>
+					<option>M6</option>
+					<option>M7</option>
+					<option>M8</option>
+					<option>M10</option>
+					<option>M12</option>
+					<option>M14</option>
+					<option>M16</option>
+					<option>M18</option>
+					<option>M20</option>
+					<option>M22</option>
+					<option>M24</option>
+					<option>M27</option>
+					<option>M30</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">螺纹类型</td>
+			<td align="left" style="width: 300px">
+				<table style="width: 100%; vertical-align:middle">
+					<tr>
+						<td style="width: 25%">
+				            <input id="cbCoarse" name="TPI" type="radio" ></input>粗
+							<label for="cbHex"><img id="imgCoarse" src="ThreadCoarse.png" width="65" alt="Coarse"/></label>
+						</td>
+						<td style="width: 25%">
+							<input id="cbFine" name="TPI"   type="radio" ></input>一般
+							<label for="cbSocket"><img id="imgFine" src="ThreadFine.png"  width="65" alt="Fine"/></label>
+						</td>
+						<td style="width: 50%">
+							<input id="cbXFine" name="TPI"  type="radio" ></input>细<br/>
+							<label for="cbMachine"><img id="imgXFine" src="ThreadxFine.png"  width="65" alt="Extra Fine"/></label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+		<tr>
+			<td align="right" style="width: 170px">自动打通孔?</td>
+			<td align="left" style="width: 300px">
+				<table style="width: 100%; vertical-align:middle">
+					<tr>
+						<td style="width: 50%">
+							<input id="cbThruHole"  value="Hex" name="Holetype"  type="radio"></input>
+							<label for="cbThruHole"><img id="imgThru" src="ThruHole.png" alt="Thru hole"/></label>
+						</td>
+						<td style="width: 50%">
+							<input id="cbPartialHole" value="Socket" name="Holetype" type="radio" />
+							<label for="cbPartialHole"><img id="imgPartial" src="NotThruHole.png" alt="Partial Hole"/></label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+        <tr id="RowLength">
+			<td align="right">孔长度 (mm)</td>
+			<td><input name="Length" id="LENGTH" style="width: 150px;" type="text" value="1.00"/></td>
+		</tr>
+	</table>
+</form>
+</div>
+<div id="STATUS" style="width: 99%; border:thick red double;" >
+<p id="Buildtime"></p>
+<h2 style="text-align: center;">
+... PLEASE WAIT...
+</h2>
+<h2 style="text-align: center;">
+Building Threaded Hole... 
+</h2>
+<p style="text-align: center;">
+<strong id="HOLEDESCRIPTION"></strong>
+</p>
+</div>
+<div id="BUTTONS">
+	<table style="width: 470px; text-align: center;">
+	<tr>
+	<td style="width: 25%"></td>
+	<td style="width: 25%">
+	<button name="bOk" id="bOK">&nbsp;&nbsp;&nbsp;确定&nbsp;&nbsp;&nbsp;</button>	</td>	
+	<td style="width: 25%">
+	<button name="bCancel" id="bCancel">取消</button>	</td>
+	<td style="width: 25%"></td>
+	</tr>
+	</table>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" type="text/javascript"></script>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="zh-cn" http-equiv="Content-Language" />
+    <title>SAE/UTS Bolt Creation</title>
+    <script type="text/javascript">
+
+        function setMeasurementType(newtype) {
+            switch (newtype) {
+                case "SAE":
+                $("#cbSAE").click();
+                    break;
+                default:
+                $("#cbMetric").click();
+                    break;
+            }
+        }
+
+        function describe(text) {
+            $("#DESC").text(text);
+        }
+
+        function setStatus(statusText) {
+            $("#PARAMETERS").hide();
+            $("#BUTTONS").hide();
+            window.location = "skp:ruby_Continue@Continue"
+        }
+
+        function myTimer() {
+            var d = new Date();
+            $("#Buildtime").html(d.toLocaleTimeString());
+        }
+
+        function buildIt() {
+            var results;
+            results = $("#RESULTS").val();
+            window.location = results;
+        }
+
+        $(document).ready(function () {
+            $("#bHoleSelected").hide();
+            $("#bTappedHoleSelected").hide();
+            $("#bBoltSelected").hide();
+            $("#bNutSelected").hide();
+            $("#bWasherSelected").hide();
+
+            var myVar = setInterval(function () { myTimer() }, 1000);
+
+            $("#bHole").click(function () {
+                $("#bHole").hide();
+                $("#bHoleSelected").show();
+                results = "skp:ruby_OKPressed@me=" +
+                    $("#MEASUREMENTTYPE").val() + ";fn=DRILLEDHOLE;";
+                $("#RESULTS").val(results);
+                setTimeout(function () { buildIt(); }, 600);
+            });
+
+            $("#bTappedHole").click(function () {
+                $("#bTappedHole").hide();
+                $("#bTappedHoleSelected").show();
+                results = "skp:ruby_OKPressed@me=" +
+                    $("#MEASUREMENTTYPE").val() + ";fn=TAPPEDHOLE;";
+                $("#RESULTS").val(results);
+                setTimeout(function () { buildIt(); }, 600);
+            });
+
+            $("#bBolt").click(function () {
+                $("#bBolt").hide();
+                $("#bBoltSelected").show();
+                results = "skp:ruby_OKPressed@me=" +
+                    $("#MEASUREMENTTYPE").val() + ";fn=BOLT;";
+                $("#RESULTS").val(results);
+                setTimeout(function () { buildIt(); }, 600);
+            });
+
+            $("#bNut").click(function () {
+                $("#bNut").hide();
+                $("#bNutSelected").show();
+                results = "skp:ruby_OKPressed@me=" +
+                    $("#MEASUREMENTTYPE").val() + ";fn=NUT;";
+                $("#RESULTS").val(results);
+                setTimeout(function () { buildIt(); }, 600);
+            });
+
+            $("#bWasher").click(function () {
+                $("#bWasher").hide();
+                $("#bWasherSelected").show();
+                results = "skp:ruby_OKPressed@me=" +
+                    $("#MEASUREMENTTYPE").val() + ";fn=WASHER;";
+                $("#RESULTS").val(results);
+                setTimeout(function () { buildIt(); }, 600);
+            });
+
+            $("#bCancel").click(function () {
+                window.location = "skp:ruby_CANCELPressed@CANCEL";
+            });
+
+            $("#imgMetricDeselect").click(function () { $("#cbMetric").click(); });
+            $("#imgSAEDeselect").click(function () { $("#cbSAE").click(); });
+
+            $("#cbMetric").click(function () {
+                $("#imgMetric").show();
+                $("#imgMetricDeselect").hide();
+                $("#imgSAE").hide();
+                $("#imgSAEDeselect").show();
+                $("#MEASUREMENTTYPE").val("METRIC");
+            });
+
+            $("#cbSAE").click(function () {
+                $("#imgMetric").hide();
+                $("#imgMetricDeselect").show();
+                $("#imgSAE").show();
+                $("#imgSAEDeselect").hide();
+                $("#MEASUREMENTTYPE").val("SAE");
+            });
+            setMeasurementType('Metric');
+
+            $("#bTappedHole").hover(function () { describe("Create a threaded hole component that can open holes in one or two surfaces"); }, function () { describe(""); });
+            $("#bHole").hover(function () { describe("Create a drilled hole component that can open holes in one or two surfaces"); }, function () { describe(""); });
+            $("#bBolt").hover(function () { describe("Create a threaded Bolt or Screw component"); }, function () { describe(""); });
+            $("#bNut").hover(function () { describe("Create a threaded Nut component"); }, function () { describe(""); });
+            $("#bWasher").hover(function () { describe("Create a Standard Washer component"); }, function () { describe(""); });
+            $("#bCancel").hover(function () { describe("Close this window and return to Sketchup"); }, function () { describe(""); });
+            $("#imgMetric").hover(function () { describe("You have selected Metric threads and sizes"); }, function () { describe(""); });
+            $("#imgMetricDeselect").hover(function () { describe("Select Metric threads and sizes"); }, function () { describe(""); });
+            $("#imgSAE").hover(function () { describe("You have selected American standard threads and sizes"); }, function () { describe(""); });
+            $("#imgSAEDeselect").hover(function () { describe("Select American standard threads and sizes"); }, function () { describe(""); });
+
+
+            window.location = "skp:ruby_DocumentReady@OK";
+
+        });
+    </script>
+
+
+</head>
+
+<body title="创建标准螺杆/螺帽/螺纹孔">
+
+    <div id="HEADING">
+        <h1 style="text-align:center">创建标准螺杆/螺帽/螺纹孔</h1>
+        <form method="post">
+            <input id="RESULTS" type="hidden" value="CANCEL" />
+            <input id="MEASUREMENTTYPE" type="hidden" value="SAE" />
+            <table style="width: 500px; border:medium white solid">
+                <tr>
+                    <td style="width: 130px; text-align: right;">
+                        <h3>尺寸标准</h3>
+                    </td>
+                    <td style="width: 180px">
+                        <input id="cbMetric" value="Flat" name="MeasurmentType" type="radio"
+                            checked="checked">公制标准</input><br>
+                        <label for="cbMetric">
+                            <img id="imgMetric" src="Metric.png" alt="Metric Sizes" height="100" />
+                            <img id="imgMetricDeselect" src="MetricDeselect.png" alt="Metric Sizes" height="100" />
+                        </label>
+                    </td>
+                    <td style="width: 180px">
+                        <input id="cbSAE" value="Flat" name="MeasurmentType" type="radio">SAE标准</input><br>
+                        <label for="cbSAE">
+                            <img id="imgSAE" src="USOnly.png" alt="SAE Inches" height="100" />
+                            <img id="imgSAEDeselect" src="USOnlyDeselect.png" alt="SAE Inches" height="100" />
+                        </label>
+                    </td>
+                </tr>
+            </table>
+            <table style="width: 500px; border:medium white solid">
+                <tr>
+                    <td align="right" style="width: 120px">
+                        <h3>打孔?</h3>
+                    </td>
+                    <td align="left" style="width: 120px;">
+                        <img id="bTappedHole" style="vertical-align:middle; padding-left:15px;" src="ButtonHole.png"
+                            alt="Flat Washer" />
+                        <img id="bTappedHoleSelected" style="vertical-align:middle; padding-left:15px;"
+                            alt="Drilled Hole" src="ButtonHoleSelected.PNG" />
+                    </td>
+                    <td align="left" style="width: 120px;">
+                        <img id="bHole" style="vertical-align:middle; padding-left:15px;" alt="Drilled Hole"
+                            src="ButtonDrilled.PNG" />
+                        <img id="bHoleSelected" style="vertical-align:middle; padding-left:15px;" alt="Drilled Hole"
+                            src="ButtonDrilledSelected.PNG" />
+                    </td>
+                    <td align="left" style="width: 120px">
+                    </td>
+                </tr>
+            </table>
+            <table style="width: 500px; border:medium white solid">
+                <tr>
+                    <td align="right" style="width: 120px;">
+                        <h3>螺纹?</h3>
+                    </td>
+                    <td>
+                        <img id="bBolt" style="vertical-align:middle; padding-left:15px;" src="ButtonBolts.png"
+                            alt="Bolts and Screws" />
+                        <img id="bBoltSelected" style="vertical-align:middle; padding-left:15px;" alt="Drilled Hole"
+                            src="ButtonBoltsSelected.PNG" />
+                    </td>
+                    <td align="left" style="width: 120px;">
+                        <img id="bNut" style="vertical-align:middle; padding-left:18px;" alt="Nuts"
+                            src="ButtonNuts.png" />
+                        <img id="bNutSelected" style="vertical-align:middle; padding-left:15px;" alt="Drilled Hole"
+                            src="ButtonNutsSelected.PNG" />
+                    </td>
+                    <td align="left" style="width: 120px;">
+                        <img id="bWasher" style="vertical-align:middle; padding-left:15px;" alt="Nuts"
+                            src="ButtonWashers.png" />
+                        <img id="bWasherSelected" style="vertical-align:middle; padding-left:15px;" alt="Drilled Hole"
+                            src="ButtonWashersSelected.PNG" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="BUTTONS">
+        <table style="width: 470px; text-align: center;">
+            <tr>
+                <td style="width: 25%; text-align:left"></td>
+                <td style="width: 25%"> <button name="bCancel" id="bCancel">取消</button> </td>
+                <td style="width: 25%"></td>
+            </tr>
+        </table>
+        <h4 id="DESC" style="color:white; margin-top: 0px">EP_Fasteners, v1.0 &copy;2015, Eye Physics, LLC</h4>
+
+    </div>
+</body>
+
+</html>
