@@ -37,14 +37,14 @@ module EP
                   @@BoltSize = "#10"
                   @@Length = "1.00"
                else
-                  @@BoltSize = "M8"
-                  @@Length = "30"
+                  @@BoltSize = "M10"
+                  @@Length = "10"
                end
                @@TPI = "Coarse"
                @@Head   = "Hex"
                @@Fullthread = "Yes"
                @@Inclwasher = "No"
-               @@is3DPrint = "Yes"
+               @@DiamModify = "-0.8"
             end
             @@PREVUNITS = @@UNITS
 
@@ -99,13 +99,11 @@ module EP
             js_command = "$(\"#FULLTHREAD\").prop(\"checked\",#{ft});"
             @@dialog.execute_script(js_command)
 
-            ws = @@is3DPrint == "Yes"?"true":"false"
-            js_command = "$(\"#WASHER\").prop(\"checked\",#{ws});"
+            js_command = "$(\"#DiamModify\").val('#{@@DiamModify}');"
             @@dialog.execute_script(js_command)
 
             js_command = "setHeadType('#{@@Head}');"
             @@dialog.execute_script(js_command)
-
 
          end
 
@@ -128,7 +126,7 @@ module EP
                when "ft"
                   @@Fullthread = e[1]=="true" ? "Yes" : "No"
                when "ws"
-                  @@is3DPrint = e[1]=="true" ? "Yes" : "No"
+                  @@DiamModify = e[1]
                when "tt"
                   @@TPI = e[1]
                end
@@ -141,14 +139,16 @@ module EP
             #@@Diam = EPTappedHole::cLength(die[0][3], @@UNITS)
             #修改如下
 
-            puts "is3DPrint:" + @@is3DPrint
-            tempstr=die[0][3]
+            puts "DiamModify:" + @@DiamModify
+            tempStr=die[0][3]
+            tempFolat=@@DiamModify.to_f
 
-            if @@is3DPrint == "Yes" then
-               puts "3D打印模型/直径减去0.8mm:"
-               tempFloat=tempstr.to_f
-               tempFloat-=0.8
-               tempstr=tempFloat.to_s+"mm"
+            if tempFolat != 0 then
+               puts "直径微调:" + tempFolat.to_s
+
+               tempstr=(tempStr.to_f + tempFolat).to_s
+
+               puts "微调到了:" + tempStr
             end
 
             @@Diam = EPTappedHole::cLength(tempstr, @@UNITS)
@@ -210,7 +210,6 @@ module EP
             @length    = @@Length
             @head      = @@Head
             @inclwasher= @@Inclwasher
-            @is3DPrint= @@is3DPrint
             @fullthread= @@Fullthread
             @maxthread = @@Maxthread
             @hex       = @@Hex
@@ -304,8 +303,7 @@ module EP
             end
             hole = create_bolt(points, l, d, p, maxthread, offset, container, @head)
          end
-
-
+        
          #---------------------------------------------------------------------------------------------------------
          def create_bolt(points, length, diam, pitch, maxthread, startoffset, container, headtype)
             scale = 1.0

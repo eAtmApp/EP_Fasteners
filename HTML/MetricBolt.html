@@ -93,7 +93,7 @@
                     ";tt=" + $("#THREADTYPE").val() +
                     ";ht=" + $("#HEADTYPE").val() +
                     ";ft=" + $("#FULLTHREAD").prop("checked") +
-                    ";ws=" + $("#WASHER").prop("checked");
+                    ";ws=" + $("#DiamModify").val();
                 $("#RESULTS").val(results);
                 setTimeout(function () { buildBolt() }, 600);
             });
@@ -101,7 +101,6 @@
             $("#bCancel").click(function () {
                 window.location = "skp:ruby_CANCELPressed@CANCEL";
             });
-
 
             $("#imgHex").click(function () { $("#cbHex").click(); });
             $("#imgSocket").click(function () { $("#cbSocket").click(); });
@@ -122,6 +121,16 @@
             window.location = "skp:ruby_DocumentReady@OK";
 
         });
+
+        function LimitDiamModify(obj) {
+            if (isNaN(obj.value) && !/^-$/.test(obj.value)) {
+                obj.value = "";
+            }
+            if (!/^[-]?\.{0,1}\d{0,1}$/.test(obj.value)) {
+                obj.value = obj.value.replace(/\.\d{2,}$/, obj.value.substr(obj.value.indexOf('.'), 3));
+            }
+        }
+
     </script>
 
 
@@ -232,8 +241,11 @@
                     <td><input id="FULLTHREAD" name="cbFT" type="checkbox" /></td>
                 </tr>
                 <tr>
-                    <td align="right">3D打印(直径缩小0.8mm)?</td>
-                    <td><input id="WASHER" name="cbWasher" type="checkbox" /></td>
+                    <td align="right">直径微调(mm)</td>
+                    <td> <input id="DiamModify" style="width: 150px" type="number" value="0.00"
+                            onkeyup="" />
+                        <span>支持正负数</span>
+                    </td>
                 </tr>
             </table>
         </form>
