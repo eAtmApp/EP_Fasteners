@@ -165,7 +165,7 @@ end
          helper = "Helper "
       end
 
-      "EP Drilled Hole #{helper}#{@@DrillSize}-#{@@Length}-#{@@ThruHole} "
+      "EP钻孔 #{helper}#{@@DrillSize}-#{@@Length}-#{@@ThruHole} "
    end
 #---------------------------------------------------------------------------------------------------------
    def partname()
@@ -175,8 +175,8 @@ end
          @length = @@ZERO
          helper = "Helper "
       end
-
-      "EP Drilled Hole #{helper}#{@drillsize}-#{@length}-#{@thruhole} "
+      
+      "EP钻孔 #{helper}#{@drillsize}-#{@length}-#{@thruhole} "
    end
 #---------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------

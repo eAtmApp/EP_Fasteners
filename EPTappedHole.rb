@@ -177,7 +177,7 @@ end
          helper = "Helper "
       end
 
-      "Tapped Hole #{helper}#{@@BoltSize}-#{@@TPI}-#{@@Length}-#{@@ThruHole} "
+      "EP螺纹孔 #{helper}#{@@BoltSize}-#{@@TPI}-#{@@Length}-#{@@ThruHole} "
    end
 #---------------------------------------------------------------------------------------------------------
    def partname()
@@ -188,7 +188,7 @@ end
          helper = "Helper "
       end
 
-      "Tapped Hole #{helper}#{@boltsize}-#{@tpi}-#{@length.to_l}-#{@thruhole} "
+      "EP螺纹孔 #{helper}#{@boltsize}-#{@tpi}-#{@length.to_l}-#{@thruhole} "
    end
 
 #---------------------------------------------------------------------------------------------------------

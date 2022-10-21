@@ -207,24 +207,25 @@ end
 #-----------------------------------------------------------------------------
 # Checks if this script file has been loaded before in this SU session
 unless file_loaded?(__FILE__)                   # If not, create menu entries
-   
-   add_separator_to_menu("Tool")
-   mnu = UI.menu("Tool").add_item("螺纹工具箱")  { EP::EPFasteners::EPFastenersMenu.create }
 
-   #自己添加的工具栏按钮
-   @toolbar = UI::Toolbar.new("螺纹工具箱")
-   names=["螺纹工具箱","align_large.png","align_small.png","螺纹工具箱"]
-   @commands= UI::Command.new(names[0]){ EP::EPFasteners::EPFastenersMenu.create }
-   @commands.large_icon = names[1]
-   @commands.small_icon = names[2]
-   @commands.status_bar_text = names[3]
-   @commands.tooltip= names[0]
-   @commands.menu_text = names[0]
-   @toolbar = @toolbar.add_item @commands
-   @toolbar.show if @toolbar.get_last_state.abs == 1
+    names=["螺纹工具","align_large.png","align_small.png","螺栓/螺母/螺纹孔/钻孔"]
 
-   Sketchup.add_observer(EPFastenerAppObserver.new)
-   file_loaded(__FILE__)
+    add_separator_to_menu("Tool")
+    mnu = UI.menu("Tool").add_item(names[0])  { EP::EPFasteners::EPFastenersMenu.create }
+    
+    #自己添加的工具栏按钮
+    @toolbar = UI::Toolbar.new(names[0])
+    @commands= UI::Command.new(names[0]){ EP::EPFasteners::EPFastenersMenu.create }
+    @commands.large_icon = names[1]
+    @commands.small_icon = names[2]
+    @commands.status_bar_text = names[3]
+    @commands.tooltip= names[0]
+    @commands.menu_text = names[0]
+    @toolbar = @toolbar.add_item @commands
+    @toolbar.show if @toolbar.get_last_state.abs == 1
+
+    Sketchup.add_observer(EPFastenerAppObserver.new)
+    file_loaded(__FILE__)
 
 end
 

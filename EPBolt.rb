@@ -144,14 +144,12 @@ module EP
             tempFolat=@@DiamModify.to_f
 
             if tempFolat != 0 then
-               puts "直径微调:" + tempFolat.to_s
-
-               tempstr=(tempStr.to_f + tempFolat).to_s
-
-               puts "微调到了:" + tempStr
+                puts "直径微调:" + tempFolat.to_s
+               tempStr=(tempStr.to_f + tempFolat).to_s + "mm"
+               puts "微调2到了:" + tempStr
             end
 
-            @@Diam = EPTappedHole::cLength(tempstr, @@UNITS)
+            @@Diam = EPTappedHole::cLength(tempStr, @@UNITS)
 
             puts "最终直径"
             puts @@Diam
@@ -236,11 +234,11 @@ module EP
 
          #---------------------------------------------------------------------------------------------------------
          def self.partname()
-            "EP Bolt #{@@BoltSize}-#{@@TPI}-#{@@Length}-#{@@Head}-#{@@Fullthread}-#{@@Inclwasher}"
+            "EP螺栓 #{@@BoltSize}-#{@@TPI}-#{@@Length}-#{@@Head}-#{@@Fullthread}-微调#{@@DiamModify}"
          end
          #---------------------------------------------------------------------------------------------------------
          def partname()
-            "EP Bolt #{@boltsize}-#{@tpi}-#{@length}-#{@head}-#{@fullthread}-#{@inclwasher}"
+            "EP螺栓 #{@boltsize}-#{@tpi}-#{@length}-#{@head}-#{@fullthread}-微调#{@@DiamModify}"
          end
          #---------------------------------------------------------------------------------------------------------
          def draw_me( container)
