@@ -214,7 +214,8 @@ unless file_loaded?(__FILE__)                   # If not, create menu entries
     mnu = UI.menu("Tool").add_item(names[0])  { EP::EPFasteners::EPFastenersMenu.create }
     
     #自己添加的工具栏按钮
-    @toolbar = UI::Toolbar.new(names[0])
+    #@toolbar = UI::Toolbar.new(names[0])
+    @toolbar = UI.toolbar("easy Tools")
     @commands= UI::Command.new(names[0]){ EP::EPFasteners::EPFastenersMenu.create }
     @commands.large_icon = names[1]
     @commands.small_icon = names[2]
